@@ -8,11 +8,11 @@ from torch.autograd import Variable
 from yolo import *
 from VocDataset import *
 import sys
-
+import math
 
 class Loss(Module):
     def __init__(self,S,B,l_coord,l_noobj):
-        super(yoloLoss,self).__init__()
+        super().__init__()
         self.S = S
         self.B = B
         self.l_coord = l_coord
@@ -140,7 +140,7 @@ class Yolo(Module):
 
 		base = torch.load(pretrained)
 
-		self.model = Secuential(
+		self.model = Sequential(
 			base,
 			Sequential(
                 Conv2d(1024, 1024, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False),
@@ -185,7 +185,7 @@ def make_checkpoint(state, is_best_model, checkpoint_filename):
 
 def update_lr(optimizer, lr):
 
-	for param_group in optimizer:
+	for param_group in optimizer.param_groups:
 		param_group['lr'] = lr
 
 
@@ -245,9 +245,8 @@ if __name__ == '__main__':
 
 	checkpoints = './checkpoints'
 
-	optim = torch.optim.Adam( yolo.parameters(), lr = lr_[0], momentum = momentum)
-
 	lr_ = [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01]
+	optim = torch.optim.SGD( yolo.parameters(), lr = lr_[0], momentum = momentum)
 
 	batches = 0
 	yolo.train()
@@ -261,7 +260,7 @@ if __name__ == '__main__':
 
 		#train batches
 		total_loss = 0.0
-		for i, (images, labels) in enumerate(data):
+		for i, (images, labels) in enumerate(train_loader):
 			
 			if batches > 20000:
 				break

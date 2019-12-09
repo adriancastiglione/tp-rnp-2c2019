@@ -59,10 +59,10 @@ class VocDataset(Dataset):
         #age by up to a factor of 1.5 in the HSV color space."""
 
         #data augment
-        image = random_bright(image)
-        image = random_hue(image)
-        image = random_saturation(image)
-        image, boxes = aug.resize(image, boxes, (self.img_size, self.img_size))
+        image = self.random_bright(image)
+        image = self.random_hue(image)
+        image = self.random_saturation(image)
+        image, boxes = self.resize(image, boxes, (self.img_size, self.img_size))
             
         #rescale to 0 - 1
         image = image / float(255)
@@ -155,7 +155,7 @@ class VocDataset(Dataset):
         #resize_box
         result = []
         for box in boxes:
-            cls_id, x, y, w, h = plot_tools.unnormalize_box_params(box, origin_shape)
+            cls_id, x, y, w, h = self._denormalize(box, origin_shape)
 
             x *= x_factor
             w *= x_factor
