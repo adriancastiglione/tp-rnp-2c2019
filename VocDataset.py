@@ -68,14 +68,34 @@ class VocDataset(Dataset):
         image = image / float(255)
         target = self._encode(image, boxes)
 
-        #plot_tools.plot_compare(image, target, boxes)
         return image, target
-        #plot_tools.plot_image_bbox(image, boxes)
         
 
     def __len__(self):
         return len(self.images_paths) 
 
+    def _normalize(box, image_shape):
+        """a helper function to normalize the
+        box params
+        Args:
+            box: a namedtuple contains box parameters in
+                the format of cls_num, x, y, w, h
+            image_shape: corresponding image shape (h, w, c)
+        
+        Returnes:
+            Box: a namedtuple of (cls_name, x, y, w, h)
+        """
+        cls_name, x, y, w, h = box
+        height, width = image_shape[:2]
+
+        #normalize
+        x *= 1. / width
+        w *= 1. / width
+        y *= 1. / height
+        h *= 1. / height
+
+        Box = type(box)
+        return Box(cls_name, x, y, w, h)
 
     def _denormalize(self, box, img_shape):
         cls_name, x, y, w, h = box
@@ -181,7 +201,7 @@ class VocDataset(Dataset):
 
             Box = type(box)
             box = Box(cls_id, x, y, w, h)
-            result.append(plot_tools.normalize_box_params(box, image.shape))
+            result.append(self._normalize(box, image.shape))
 
         return image, result 
 
