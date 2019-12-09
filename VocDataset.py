@@ -74,7 +74,7 @@ class VocDataset(Dataset):
     def __len__(self):
         return len(self.images_paths) 
 
-    def _normalize(box, image_shape):
+    def _normalize(self, box, image_shape):
         """a helper function to normalize the
         box params
         Args:
