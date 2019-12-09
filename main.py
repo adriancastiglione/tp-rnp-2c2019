@@ -211,7 +211,7 @@ if __name__ == '__main__':
 	    ],
 
 	    'img_size': 224,
-	    'labels_path': '',
+	    'labels_path': sys.argv[2],
 	    'train_file': 'train.txt',
 	    'hue': 0.5,
 	    'saturation' : 0.7,
