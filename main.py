@@ -171,9 +171,9 @@ class Yolo(Module):
 		)
 
 
-		def forward(self, x):
+	def forward(self, x):
 
-			return self.model(x)
+		return self.model(x)
 
 
 
