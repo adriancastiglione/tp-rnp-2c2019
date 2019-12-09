@@ -1,11 +1,12 @@
 
 import torch
-from torch.nn as nn
-from torch.nn import Module, Secuential, LeakyReLU, Conv2d, BatchNorm2d, Linear, Dropout
+import torch.nn as nn
+from torch.nn import Module, Sequential, LeakyReLU, Conv2d, BatchNorm2d, Linear, Dropout
 import torch.nn.functional as F
 import torchvision as tv
 from torch.autograd import Variable
 from yolo import *
+from VocDataset import *
 import sys
 
 
@@ -133,7 +134,7 @@ class Loss(Module):
 
 class Yolo(Module): 
 
-	def __init__(self, S = 7, B = 2, C = 20, pretrained):
+	def __init__(self, S, B, C, pretrained):
 
 		super().__init__()
 
@@ -190,12 +191,12 @@ def update_lr(optimizer, lr):
 
 if __name__ == '__main__':
 
-"""
-args:
-	dataset image list
-	anotations directory
-	pretrained model for yolo
-"""
+	"""
+	args:
+		dataset image list
+		anotations directory
+		pretrained model for yolo
+	"""
 	
 	S = 7
 	B = 2
@@ -222,7 +223,7 @@ args:
 	l_coord = 5
 	l_noobj = 0.5
 
-	train_dataset = VocDataset(S, B, C)
+	train_dataset = VocDataset(S, B, args)
 
 	train_loader = torch.utils.data.DataLoader(
 		train_dataset,
@@ -232,7 +233,7 @@ args:
 	)
 
 	device = torch.device('cuda')
-	yolo = Yolo(S, B, C, sys.argv[3])
+	yolo = Yolo(S, B, C, sys.argv[1])
 	yolo.cuda()
 
 	loss = Loss(S,B,l_coord,l_noobj)

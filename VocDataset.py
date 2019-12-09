@@ -6,9 +6,6 @@ from collections import namedtuple
 from torch.utils.data import Dataset
 import numpy as np
 
-import utils.plot_tools as plot_tools
-import utils.data_augmentation as aug
-
 
 #only support voc dataset
 class VocDataset(Dataset):
@@ -80,7 +77,7 @@ class VocDataset(Dataset):
         return len(self.images_paths) 
 
 
-    def _denormalize(self, box, img_shape)
+    def _denormalize(self, box, img_shape):
         cls_name, x, y, w, h = box
         height, width = img_shape[:2]
 
