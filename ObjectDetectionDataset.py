@@ -28,7 +28,7 @@ class ObjectDetectionDataset(Dataset):
 		anotation = []
 
 		with open(self.img_list[index], 'rb') as f:
-			img = Image.open(f)
+			img = Image.open(f).convert('RGB')
 			img = self.transform(img)
 
 		image_name = os.path.basename(self.img_list[index])
@@ -36,15 +36,16 @@ class ObjectDetectionDataset(Dataset):
 		with open(labels_path + '/' + image_name + '.txt', 'r') as f:
 			anotations = f.read().split('\n')
 			for current_anotation in anotations:
-				current_anotation = anotation.split(' ')
+				current_anotation = current_anotation.split(' ')
+				height, width, _ = image.shape
 				anotation.append({
 					'class' : int(current_anotation[0]),
 					'x' : float(current_anotation[1]),
 					'y' : float(current_anotation[2]),
 					'w' : float(current_anotation[3]),
-					'h' : float(current_anotation[4])
+					'h' : float(current_anotation[4]).
+					'img_size': width. #asume img cuadrada
 				})
-
 
 		return img, anotation
 		
